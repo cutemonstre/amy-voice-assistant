@@ -1,0 +1,11 @@
+# Copy to .dev.vars for local development (.dev.vars is gitignored).
+# `npm run dev` does this for you: scripts/sync-env.mjs copies these two keys from ~/.env.
+# Production: `npx wrangler secret put OPENROUTER_API_KEY` and `npx wrangler secret put ELEVENLABS_API_KEY`.
+OPENROUTER_API_KEY=
+# Optional. Without it speech-to-text falls back to OpenRouter (MAI-Transcribe 2) and replies are text-only, with a warning.
+# Models and the voice are wrangler.jsonc vars: STT_PROVIDER, ELEVENLABS_MODEL (default eleven_v4_turbo; eleven_v4 for max quality), ELEVENLABS_VOICE_ID.
+ELEVENLABS_API_KEY=
+# The private-link gate (optional). When set, /api/turn answers 401 {"error":"locked"} unless the request carries a matching
+# x-app-token header. The page sends it after you open https://<your-worker>/?token=<APP_TOKEN> once (the link saves the token in that
+# browser and then hides it from the address bar). Leave it empty locally: no gate. Production: `npx wrangler secret put APP_TOKEN`.
+APP_TOKEN=

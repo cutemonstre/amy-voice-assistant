@@ -1,0 +1,37 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "voice-chat",
+  "compatibility_date": "2026-09-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "main": "@tanstack/react-start/server-entry",
+  "workers_dev": true,
+  "observability": { "enabled": true },
+  // Chat sessions and their messages (schema: migrations/0001_init.sql).
+  // Local dev: `npm run dev` applies the migrations to the local copy first. Remote: `npm run db:migrate:remote`.
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "voice-chat",
+      // Run `wrangler d1 create voice-chat` and paste the returned id here.
+      "database_id": "<your-d1-database-id>",
+      "migrations_dir": "migrations"
+    }
+  ],
+  // Secrets (never in this file): OPENROUTER_API_KEY and ELEVENLABS_API_KEY.
+  // Locally they come from .dev.vars (written from ~/.env by `npm run dev`); in production use `wrangler secret put`.
+  "vars": {
+    "LLM_MODEL": "anthropic/claude-sonnet-5.5",
+    "LLM_EFFORT": "low",
+    // Speech-to-text provider: "elevenlabs" (Scribe v2, default) or "openrouter" (MAI-Transcribe 2).
+    // With "elevenlabs" and no ELEVENLABS_API_KEY the Worker falls back to "openrouter" and warns.
+    // The spoken language is always auto-detected (no language is sent to either provider).
+    "STT_PROVIDER": "elevenlabs",
+    "STT_MODEL_ELEVENLABS": "scribe_v2",
+    "STT_MODEL_OPENROUTER": "microsoft/mai-transcribe-2",
+    // Default TTS model. "eleven_v4_turbo" is fast (first audio in about 0.2 s); switch to "eleven_v4" for maximum quality.
+    // The page's v4 / Turbo toggle overrides this per browser (the client sends it as `ttsModel`).
+    "ELEVENLABS_MODEL": "eleven_v4_turbo",
+    // "Amy - Natural and Sweet" (tested with eleven_v4). Stock "Sarah" is EXAVITQu4vr4xnSDxMaL.
+    "ELEVENLABS_VOICE_ID": "OZxMHsGaBmV5pjMIDIn0"
+  }
+}
